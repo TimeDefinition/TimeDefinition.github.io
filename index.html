@@ -1,91 +1,172 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-    <title>炫酷首页</title>
+    <meta charset="UTF-8">
+    <title>数学浪漫主义 - 我的心属于你</title>
     <style>
-        :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #ecf0f1;
-            --animation-speed: 2s;
-        }
-
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
             margin: 0;
-            overflow-x: hidden;
-            min-height: 100vh;
-            background: #f0f4f8;
-            perspective: 1000px;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-
-        h1 {
-            color: var(--primary-color);
-            font-size: 4rem;
-            text-align: center;
+            height: 100vh;
+            background: #000;
+            overflow: hidden;
             position: relative;
-            z-index: 2;
-            animation: 
-                fadeIn var(--animation-speed) ease,
-                rotate3d var(--animation-speed) infinite;
+            font-family: 'Microsoft Yahei', sans-serif;
         }
 
-        h1::after {
-            content: "";
-            position: absolute;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(to right, #3498db, #9b59b6);
-            bottom: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            animation: glow var(--animation-speed) infinite;
-        }
-
-        .sparkles {
+        #heart-canvas {
             position: absolute;
             width: 100%;
             height: 100%;
-            pointer-events: none;
-            background: 
-                radial-gradient(circle, transparent 80%, var(--secondary-color) 100%) 
-                repeating;
-            
-            animation: sparkleAnim var(--animation-speed) infinite;
+        }
+
+        .content {
+            position: relative;
+            z-index: 2;
+            color: white;
+            text-align: center;
+            padding-top: 20vh;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #ff0077, #ff00ff);
+            -webkit-background-clip: text;
+            color: transparent;
+            animation: pulse 2s infinite;
+        }
+
+        .poem {
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 1.2em;
+            line-height: 1.8;
+            opacity: 0;
+            animation: fadeIn 2s forwards;
+            animation-delay: 1s;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
+            from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        @keyframes rotate3d {
-            0% { transform: rotateX(0) rotateY(0); }
-            50% { transform: rotateX(15deg) rotateY(30deg); }
-            100% { transform: rotateX(0) rotateY(0); }
+        .heart-equation {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            background: rgba(255,255,255,0.1);
+            padding: 10px;
+            border-radius: 5px;
         }
 
-        @keyframes glow {
-            0% { transform: scale(1); opacity: 0.7; }
-            50% { transform: scale(1.2); opacity: 0.3; }
-            100% { transform: scale(1); opacity: 0.7; }
+        .accept-button {
+            margin-top: 30px;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            background: linear-gradient(45deg, #ff0077, #ff00ff);
+            border: none;
+            border-radius: 30px;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.3s;
         }
 
-        @keyframes sparkleAnim {
-            0% { background-position: 0 0; }
-            100% { background-position: 200% 200%; }
+        .accept-button:hover {
+            transform: scale(1.1);
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>欢迎来到我的网站！✨</h1>
-        <div class="sparkles"></div>
+    <canvas id="heart-canvas"></canvas>
+    
+    <div class="content">
+        <h1>❤ 你是我唯一的数学解 ❤</h1>
+        <div class="poem">
+            <p>当笛卡尔坐标系遇上三角函数，</p>
+            <p>当费马定理遇到你的微笑，</p>
+            <p>所有复杂的公式都找到了最优解。</p>
+            <p>你是我的无限大定义域，</p>
+            <p>是穿越时空的傅里叶变换，</p>
+            <p>是我生命中最美的拓扑结构。</p>
+            <button class="accept-button">确认接收我的心形方程</button>
+        </div>
     </div>
+
+    <div class="heart-equation">
+        (x² + y² - 1)³ - x²y³ = 0
+    </div>
+
+    <script>
+        const canvas = document.getElementById('heart-canvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        function drawHeart(t) {
+            ctx.fillStyle = '#ff3366';
+            ctx.beginPath();
+            
+            for(let theta = 0; theta < Math.PI * 2; theta += 0.01) {
+                const x = 16 * Math.pow(Math.sin(theta), 3);
+                const y = -1*(13 * Math.cos(theta) - 5*Math.cos(2*theta) 
+                         - 2*Math.cos(3*theta) - Math.cos(4*theta));
+                
+                const scale = 10 + Math.sin(t/500) * 2;
+                const px = x * scale + canvas.width/2;
+                const py = y * scale + canvas.height/2 + 100;
+                
+                ctx.lineTo(px, py);
+            }
+            
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        function animate() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            const time = Date.now();
+            drawHeart(time);
+            
+            requestAnimationFrame(animate);
+        }
+
+        // 添加星空效果
+        function createStars() {
+            ctx.fillStyle = '#fff';
+            for(let i = 0; i < 100; i++) {
+                const x = Math.random() * canvas.width;
+                const y = Math.random() * canvas.height;
+                const radius = Math.random() * 1.5;
+                
+                ctx.beginPath();
+                ctx.arc(x, y, radius, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        createStars();
+        animate();
+
+        // 按钮点击效果
+        document.querySelector('.accept-button').addEventListener('click', () => {
+            alert('❤ 方程已永久写入内存，无法删除！\n你是我唯一的真解！');
+        });
+    </script>
 </body>
 </html>
